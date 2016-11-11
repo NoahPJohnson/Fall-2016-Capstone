@@ -42,6 +42,10 @@ public class ProjectileScript : MonoBehaviour
         }
         else
         {
+            if (accelerationStart < accelerationMax)
+            {
+                accelerationStart = timer * (accelerationMax / 2);
+            }
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }
 	}
@@ -100,6 +104,14 @@ public class ProjectileScript : MonoBehaviour
                 }
                 other.GetComponent<ProjectileScript>().ReduceProjectileHP();
             }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            Destroy(gameObject);
         }
     }
 }

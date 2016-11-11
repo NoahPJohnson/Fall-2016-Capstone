@@ -286,7 +286,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
  <Reference Include="Tobii.EyeX.Client.Net20">
- <HintPath>C:/Users/Noah/Documents/NPJUnityCapstoneProject/NPJ_Unity_Project1/Assets/Tobii/Plugins/x86_64/Tobii.EyeX.Client.Net20.dll</HintPath>
+ <HintPath>C:/Users/Noah/Documents/GitHub/Fall-2016-Capstone/NPJUnityCapstoneProject/NPJ_Unity_Project1/Assets/Tobii/Plugins/x86_64/Tobii.EyeX.Client.Net20.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
