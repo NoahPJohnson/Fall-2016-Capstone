@@ -54,8 +54,9 @@ public class EnemySpawnerScript : MonoBehaviour
     {
         EnemyData data;
 
-        data.spawnIndex = Random.Range(0, 2);
-        if (Random.Range(0, 1) == 0)
+        data.spawnIndex = Random.Range(0, 3);
+        Debug.Log("Spawn Index: " + data.spawnIndex);
+        if (Random.Range(0, 2) == 0)
         {
             data.front = false;
         }
@@ -63,6 +64,7 @@ public class EnemySpawnerScript : MonoBehaviour
         {
             data.front = true;
         }
+        Debug.Log("front = " + data.front);
         data.xPosition = Random.Range(-xRange, xRange);
         data.yPosition = Random.Range(-yRange, yRange);
         data.enemyToSpawn = enemyArray[Random.Range(0, enemyArray.Length)];
@@ -79,6 +81,7 @@ public class EnemySpawnerScript : MonoBehaviour
         }
 		data.enemyToSpawn.transform.position = spawnPoint.position;
 		data.enemyToSpawn.transform.forward = spawnPoint.forward;
-        data.enemyToSpawn.transform.localPosition = new Vector3(data.xPosition, data.yPosition, 0);
+        data.enemyToSpawn.transform.position += new Vector3(data.xPosition, data.yPosition, 0);
+        data.enemyToSpawn.GetComponent<EnemyMovementScript>().SetMovementRange(spawnPoint.position);
     }
 }

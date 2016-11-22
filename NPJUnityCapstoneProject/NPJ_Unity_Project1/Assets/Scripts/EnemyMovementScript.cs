@@ -3,7 +3,10 @@ using System.Collections;
 
 public class EnemyMovementScript : MonoBehaviour
 {
+    [SerializeField] Transform enemySpawner;
     EnemyScript enemyScript;
+    Vector3 limitVector;
+    bool clampZ = false;
     [SerializeField] bool useTimer;
     [SerializeField] int timeToFire;
     bool okToFire = true;
@@ -17,6 +20,8 @@ public class EnemyMovementScript : MonoBehaviour
     [SerializeField] bool avoid;
     [SerializeField] float avoidRadius = 8f;
     [SerializeField] bool zigZag;
+    [SerializeField] bool subEnemy;
+    [SerializeField] Transform parentEnemy;
     float randX;
     float randY;
     Vector3 zigZagDestination;
@@ -30,6 +35,7 @@ public class EnemyMovementScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        enemySpawner = GameObject.FindGameObjectWithTag("NeutralLook").transform;
         enemyScript = GetComponent<EnemyScript>();
         revolvePoint = new Vector3(transform.localPosition.x, transform.localPosition.y + circleRadius, transform.localPosition.z);
         if (zigZag == true)
@@ -101,10 +107,46 @@ public class EnemyMovementScript : MonoBehaviour
                 transform.localPosition = Vector3.MoveTowards(transform.localPosition, zigZagDestination, speed * Time.deltaTime);
             }
         }
-	}
+        if (subEnemy == true)
+        {
+            if (Vector3.Magnitude(parentEnemy.position - transform.position) > 1.2)
+            {
+                //transform.position = transform.position;
+                transform.position = Vector3.MoveTowards(transform.position, parentEnemy.position, circleSpeed * (Vector3.Magnitude(parentEnemy.position - transform.position)-1.15f) * Time.deltaTime);
+            }
+        }
+        if (clampZ == true)
+        {
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, limitVector.x - 12f, limitVector.x + 12f),
+            Mathf.Clamp(transform.position.y, limitVector.y - 12, limitVector.y + 12),
+            Mathf.Clamp(transform.position.z, enemySpawner.position.z-17, enemySpawner.position.z+17));
+        }
+        else
+        {
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, limitVector.x - 12f, limitVector.x + 12f),
+            Mathf.Clamp(transform.position.y, limitVector.y - 12, limitVector.y + 12),
+            transform.position.z);
+        }
+    }
 
     void SwitchMovementType()
     {
+        goStraight = false;
+        zigZag = true;
+        clampZ = true;
+        Debug.Log("Type CHANGE!");
+    }
 
+    public void SetMovementRange(Vector3 spawnPosition)
+    {
+        limitVector = spawnPosition;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "EnemySpawner")
+        {
+            SwitchMovementType();
+        }
     }
 }

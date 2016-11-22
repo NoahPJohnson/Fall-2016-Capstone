@@ -25,7 +25,7 @@ public class CameraRotationScript : MonoBehaviour
     {
 	    if (lookAtPoint == true)
         {
-            anchor.rotation = Quaternion.Slerp(anchor.rotation, rotationToTarget, Time.deltaTime);
+            anchor.rotation = Quaternion.Slerp(anchor.rotation, rotationToTarget, .4f);
         }
 	}
 
