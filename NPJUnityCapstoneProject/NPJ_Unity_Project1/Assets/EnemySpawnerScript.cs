@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+//using System;
 using System.Collections;
 
 public class EnemySpawnerScript : MonoBehaviour
@@ -8,7 +9,8 @@ public class EnemySpawnerScript : MonoBehaviour
     [SerializeField] float xRange;
     [SerializeField] float yRange;
     [SerializeField] GameObject[] enemyArray;
-
+    EnemyMovementInterface[] enemyMovementArray;
+    
     //[SerializeField] float xLocation;
     //[SerializeField] float yLocation;
 
@@ -19,9 +21,16 @@ public class EnemySpawnerScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        EnemyMovementInterface EM0 = new EMStraight();
+        EnemyMovementInterface EM1 = new EMStrafe();
+        EnemyMovementInterface EM2 = new EMCircle();
+        EnemyMovementInterface EM3 = new EMAvoid();
+        EnemyMovementInterface EM4 = new EMZigZag();
+        enemyMovementArray = new EnemyMovementInterface[5] {EM0, EM1, EM2, EM3, EM4};
+        Debug.Log("Move Types = " + enemyMovementArray[0]);
         //xLocation = Random.Range(-xRange, xRange);
         //yLocation = Random.Range(-yRange, yRange);
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -29,15 +38,15 @@ public class EnemySpawnerScript : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > spawnTime)
         {
-			Debug.Log ("spawn time");
+            timer = 0;
+            Debug.Log ("spawn time = " + spawnTime + "    timer = " + timer);
             EnemyData spawnData = RandomizeEnemyData();
-			Debug.Log ("Enemy to spawn: " + spawnData.enemyToSpawn.name);
+			//Debug.Log ("Enemy to spawn: " + spawnData.enemyToSpawn.name);
             SpawnEnemy(spawnData);
             //Instantiate<GameObject>(enemyToSpawn);
             //enemyToSpawn.transform.localPosition = new Vector3(xLocation, yLocation, transform.localPosition.z);
             //xLocation = Random.Range(-xRange, xRange);
             //yLocation = Random.Range(-yRange, yRange);
-            timer = 0;
         }
 	}
 
@@ -70,18 +79,43 @@ public class EnemySpawnerScript : MonoBehaviour
         data.enemyToSpawn = enemyArray[Random.Range(0, enemyArray.Length)];
         return data;
     }
+    string RandomlyGenerateMovementTypes()
+    {
+        int rand = Random.Range(0, 16);
+        string randBinary = System.Convert.ToString(rand, 2);
+        return randBinary;
+    }
 
     void SpawnEnemy(EnemyData data)
     {
-        Instantiate<GameObject>(data.enemyToSpawn);
+        GameObject spawnedEnemy = Instantiate<GameObject>(data.enemyToSpawn);
+        Debug.Log("INSTANTIATED");
         Transform spawnPoint = spawnArray[data.spawnIndex];
         if (data.front == false)
         {
             spawnPoint = spawnPoint.GetChild(0);
         }
-		data.enemyToSpawn.transform.position = spawnPoint.position;
-		data.enemyToSpawn.transform.forward = spawnPoint.forward;
-        data.enemyToSpawn.transform.position += new Vector3(data.xPosition, data.yPosition, 0);
-        data.enemyToSpawn.GetComponent<EnemyMovementScript>().SetMovementRange(spawnPoint.position);
+        spawnedEnemy.transform.position = spawnPoint.position;
+        spawnedEnemy.transform.forward = spawnPoint.forward;
+        spawnedEnemy.transform.position += new Vector3(data.xPosition, data.yPosition, 0);
+        spawnedEnemy.GetComponent<EnemyScript>().SetMovementRange(spawnPoint.position);
+        spawnedEnemy.GetComponent<EnemyScript>().EstablishMoveList();
+        string EMBinary = RandomlyGenerateMovementTypes();
+        int iterator = 0;
+        foreach (char c in EMBinary)
+        {
+            Debug.Log("EMBinary: " + EMBinary);
+            if (c != '0')
+            {
+                //Debug.Log("Iterator = " + iterator);
+                //Debug.Log("MovementType = " + enemyMovementArray[iterator]);
+                spawnedEnemy.GetComponent<EnemyScript>().AddMovementType(enemyMovementArray[iterator]);
+                enemyMovementArray[iterator].EstablishEnemy(spawnedEnemy.transform);
+            }
+            iterator++;
+        }
+        spawnedEnemy.SetActive(true);
     }
+
+    
 }

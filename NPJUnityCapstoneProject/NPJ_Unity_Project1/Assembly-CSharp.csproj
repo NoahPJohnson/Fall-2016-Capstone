@@ -57,7 +57,14 @@
      <Compile Include="Assets\SampleScenes\Scripts\PlaceTargetWithMouse.cs" />
      <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
      <Compile Include="Assets\ScreenRotateTrigger.cs" />
+     <Compile Include="Assets\Scripts\AbstractEnemy.cs" />
      <Compile Include="Assets\Scripts\CameraRotationScript.cs" />
+     <Compile Include="Assets\Scripts\EMAvoid.cs" />
+     <Compile Include="Assets\Scripts\EMCircle.cs" />
+     <Compile Include="Assets\Scripts\EMStrafe.cs" />
+     <Compile Include="Assets\Scripts\EMStraight.cs" />
+     <Compile Include="Assets\Scripts\EMZigZag.cs" />
+     <Compile Include="Assets\Scripts\EnemyMovementInterface.cs" />
      <Compile Include="Assets\Scripts\EnemyMovementScript.cs" />
      <Compile Include="Assets\Scripts\EnemyProjectileScript.cs" />
      <Compile Include="Assets\Scripts\EnemyScript.cs" />
