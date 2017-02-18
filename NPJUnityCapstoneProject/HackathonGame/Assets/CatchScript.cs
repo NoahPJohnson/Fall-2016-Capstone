@@ -6,6 +6,7 @@ public class CatchScript : MonoBehaviour
 {
     [SerializeField] Transform catchableDisc;
     [SerializeField] Transform caughtDisc;
+    [SerializeField] GameObject visualization;
     DiscScript discScript;
 
     [SerializeField] float recoveryTime;
@@ -43,6 +44,7 @@ public class CatchScript : MonoBehaviour
             if (time > recoveryTime)
             {
                 ableToCatch = true;
+                visualization.SetActive(true);
                 time = 0;
             }
         }
@@ -50,15 +52,22 @@ public class CatchScript : MonoBehaviour
 
     void AttemptCatch()
     {
-        if (ableToCatch == true && discInBox == true)
+        if (ableToCatch == true)
         {
             ableToCatch = false;
-            if (discScript != null)
+            visualization.SetActive(false);
+            //Debug.Log("Catch Attempted.");
+            if (discInBox == true)
             {
-                discScript.CatchDisc(transform);
-                discInBox = false;
-                holdingDisc = true;
-                IdentifyDisc();
+                if (discScript != null)
+                {
+                    discScript.CatchDisc(transform);
+                    discInBox = false;
+                    holdingDisc = true;
+                    IdentifyDisc();
+                    visualization.SetActive(true);
+                    //Debug.Log("Success, disk is: " + caughtDisc);
+                }
             }
         }
     }
@@ -71,6 +80,7 @@ public class CatchScript : MonoBehaviour
             caughtDisc = null;
             discScript = null;
             holdingDisc = false;
+            visualization.SetActive(false);
         }
     }
 

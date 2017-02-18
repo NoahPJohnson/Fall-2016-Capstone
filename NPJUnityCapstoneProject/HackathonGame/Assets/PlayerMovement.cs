@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] CharacterController playerController;
     [SerializeField] float movementSpeed = 4f;
     [SerializeField] float h;
     [SerializeField] float v;
@@ -14,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		
+        playerController = GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
@@ -27,8 +28,9 @@ public class PlayerMovement : MonoBehaviour
     {
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
-        moveVector.z = h;
-        moveVector.x = -v;
-        transform.Translate(moveVector * movementSpeed * Time.deltaTime);
+        moveVector.z = v;
+        moveVector.x = h;
+        playerController.Move(moveVector * movementSpeed * Time.deltaTime);
+        //transform.Translate(moveVector * movementSpeed * Time.deltaTime);
     }
 }
