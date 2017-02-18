@@ -8,7 +8,6 @@ public class EMStraight : EnemyMovementInterface
 
     public void Move ()
     {
-        //Debug.Log("Enemy: " + enemy + " Goes Straight " + enemyScript.speed);
         enemy.Translate(Vector3.forward * enemyScript.speed * Time.deltaTime);
     }
 

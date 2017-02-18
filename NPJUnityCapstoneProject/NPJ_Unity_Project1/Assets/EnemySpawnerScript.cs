@@ -5,6 +5,7 @@ using System.Collections;
 public class EnemySpawnerScript : MonoBehaviour
 {
     [SerializeField] Transform[] spawnArray;
+    [SerializeField] Vector3[] limitArray;
     //[SerializeField] bool front;
     [SerializeField] float xRange;
     [SerializeField] float yRange;
@@ -42,7 +43,7 @@ public class EnemySpawnerScript : MonoBehaviour
             Debug.Log ("spawn time = " + spawnTime + "    timer = " + timer);
             EnemyData spawnData = RandomizeEnemyData();
 			//Debug.Log ("Enemy to spawn: " + spawnData.enemyToSpawn.name);
-            SpawnEnemy(spawnData);
+            StartCoroutine(SpawnEnemy(spawnData));
             //Instantiate<GameObject>(enemyToSpawn);
             //enemyToSpawn.transform.localPosition = new Vector3(xLocation, yLocation, transform.localPosition.z);
             //xLocation = Random.Range(-xRange, xRange);
@@ -79,14 +80,15 @@ public class EnemySpawnerScript : MonoBehaviour
         data.enemyToSpawn = enemyArray[Random.Range(0, enemyArray.Length)];
         return data;
     }
+
     string RandomlyGenerateMovementTypes()
     {
-        int rand = Random.Range(0, 16);
+        int rand = Random.Range(0, 31);
         string randBinary = System.Convert.ToString(rand, 2);
-        return randBinary;
+        return "10000";//randBinary;
     }
 
-    void SpawnEnemy(EnemyData data)
+    IEnumerator SpawnEnemy(EnemyData data)
     {
         GameObject spawnedEnemy = Instantiate<GameObject>(data.enemyToSpawn);
         Debug.Log("INSTANTIATED");
@@ -97,7 +99,7 @@ public class EnemySpawnerScript : MonoBehaviour
         }
         spawnedEnemy.transform.position = spawnPoint.position;
         spawnedEnemy.transform.forward = spawnPoint.forward;
-        spawnedEnemy.transform.position += new Vector3(data.xPosition, data.yPosition, 0);
+        spawnedEnemy.transform.localPosition += Vector3.Scale(new Vector3(data.xPosition, data.yPosition, data.xPosition), limitArray[data.spawnIndex]);
         spawnedEnemy.GetComponent<EnemyScript>().SetMovementRange(spawnPoint.position);
         spawnedEnemy.GetComponent<EnemyScript>().EstablishMoveList();
         string EMBinary = RandomlyGenerateMovementTypes();
@@ -115,6 +117,7 @@ public class EnemySpawnerScript : MonoBehaviour
             iterator++;
         }
         spawnedEnemy.SetActive(true);
+        yield return null;
     }
 
     

@@ -11,7 +11,7 @@ public class EnemyScript : MonoBehaviour
     public float circleRadius;
     public float avoidRadius;
     float limitFactor;
-    Vector3 limitVector;
+    [SerializeField] Vector3 limitVector;
     bool clampZ = false;
     [SerializeField] int maxHealth;
     [SerializeField] int currentHealth;
@@ -33,7 +33,7 @@ public class EnemyScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        limitFactor = 12;// 2 + Vector3.Distance(transform.position, player.position);
+        limitFactor = 0;// 2 + Vector3.Distance(transform.position, player.position);
         //Debug.Log("MoveList" + moveList);
         //Debug.Log("Move List count = " + moveList.Count);
         for (int i = 0; i < moveList.Count; i ++)
@@ -49,9 +49,9 @@ public class EnemyScript : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(Mathf.Clamp(transform.position.x, limitVector.x - limitFactor, limitVector.x + limitFactor),
-            Mathf.Clamp(transform.position.y, limitVector.y - limitFactor, limitVector.y + limitFactor),
-            transform.position.z);
+            //transform.localPosition = new Vector3(Mathf.Clamp(transform.localPosition.x, limitVector.x - limitFactor, limitVector.x + limitFactor),
+            //Mathf.Clamp(transform.localPosition.y, limitVector.y - limitFactor, limitVector.y + limitFactor),
+            //transform.localPosition.z);
         }
     }
 
@@ -81,7 +81,8 @@ public class EnemyScript : MonoBehaviour
     public void SetMovementType (EnemyMovementInterface type)
     {
         moveList.Clear();
-        moveList.Add(type);
+        EnemyMovementInterface typeToAdd = type;
+        moveList.Add(typeToAdd);
     }
 
     public void AddMovementType (EnemyMovementInterface type)
@@ -104,6 +105,7 @@ public class EnemyScript : MonoBehaviour
             currentHealth -= other.GetComponent<ProjectileScript>().GetDamage();
             if (currentHealth < 1)
             {
+                moveList.Clear();
                 Destroy(gameObject);
             }
             other.GetComponent<ProjectileScript>().ReduceProjectileHP();
