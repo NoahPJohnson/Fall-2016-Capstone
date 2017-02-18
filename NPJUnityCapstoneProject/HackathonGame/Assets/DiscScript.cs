@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class DiscScript : MonoBehaviour
 {
-    [SerializeField] bool Player1;
+    [SerializeField] bool player1;
     [SerializeField] bool caught;
     [SerializeField] float speed;
     [SerializeField] float speedMax;
     [SerializeField] float speedMin;
-    [SerializeField] float increment;
-    [SerializeField] float initialSpeed;
-    [SerializeField] float initialSpeedMin;
+    [SerializeField] float incrementForce;
+    [SerializeField] float initialForce;
+    [SerializeField] float initialForceMin;
     [SerializeField] int pointValue;
+    [SerializeField] int pointMax;
     Rigidbody discRigidbody;
     Collider discCollider;
 
@@ -40,8 +41,21 @@ public class DiscScript : MonoBehaviour
 
     public void ThrowDisc()
     {
+        player1 = transform.parent.GetComponent<CatchScript>().GetPlayerType();
+        if (player1 == true)
+        {
+            GetComponent<Renderer>().material.SetColor(Shader.PropertyToID("_Color"), Color.red);
+        }
+        else
+        {
+            GetComponent<Renderer>().material.SetColor(Shader.PropertyToID("_Color"), Color.blue);
+        }
         transform.parent = null;
-        speed = initialSpeed;
+        if (initialForce < initialForceMin)
+        {
+            initialForce = initialForceMin;
+        }
+        speed = initialForce;
         caught = false;
         discCollider.enabled = true;
         discRigidbody.constraints = RigidbodyConstraints.None;
@@ -55,11 +69,18 @@ public class DiscScript : MonoBehaviour
         caught = true;
         discCollider.enabled = false;
         transform.parent = catchBox;
+        if (player1 == transform.parent.GetComponent<CatchScript>().GetPlayerType())
+        {
+            transform.parent.GetComponent<CatchScript>().IncrementScore(pointValue);
+            pointValue = 0; 
+        }
+        
+        
         transform.localPosition = new Vector3(0, 0, 1);
         transform.forward = transform.parent.forward;
+        initialForce = discRigidbody.velocity.magnitude * 100/3;
         discRigidbody.velocity = Vector3.zero;
         discRigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
-        initialSpeed = speed;
     }
 
     void FlyingState()
@@ -68,16 +89,21 @@ public class DiscScript : MonoBehaviour
         {
             discRigidbody.velocity = transform.forward * speedMin;
         }
+        if (discRigidbody.velocity.magnitude > speedMax)
+        {
+            discRigidbody.velocity = transform.forward * speedMax;
+        }
         transform.forward = discRigidbody.velocity;
+        speed = discRigidbody.velocity.magnitude;
         //discRigidbody.AddForce(Vector3.forward * speed, ForceMode.Impulse);
         //transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
     void CaughtState()
     {
-        if (initialSpeed > initialSpeedMin)
+        if (initialForce > initialForceMin)
         {
-            initialSpeed -= Time.deltaTime;
+            initialForce -= Time.deltaTime * 200;
         }
     }
 
@@ -85,12 +111,17 @@ public class DiscScript : MonoBehaviour
     {
         if (other.tag == "Goal")
         {
+            if (pointValue < pointMax)
+            {
+                pointValue *= 2;
+                if (pointValue < 1)
+                {
+                    pointValue += 1;
+                }
+            }
             if (speed < speedMax)
             {
-                //speed += increment;
-                //Increase Speed (Double?)
-                //Increase Point Value (Double?)
-                
+                discRigidbody.AddForce(transform.forward * incrementForce/*, ForceMode.Impulse*/);
             }
         } 
     }

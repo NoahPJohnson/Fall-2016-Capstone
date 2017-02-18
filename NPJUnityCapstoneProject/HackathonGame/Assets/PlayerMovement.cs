@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float movementSpeed = 4f;
     [SerializeField] float h;
     [SerializeField] float v;
+    [SerializeField] bool player1;
 
     Vector3 moveVector = new Vector3();
     //RequireComponent(typeof)
@@ -22,12 +23,24 @@ public class PlayerMovement : MonoBehaviour
 	void Update ()
     {
         MovePlayer();
+        if (transform.position.y != 1)
+        {
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+        }
 	}
 
     void MovePlayer()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
+        if (player1 == true)
+        {
+            h = Input.GetAxis("Horizontal");
+            v = Input.GetAxis("Vertical");
+        }
+        else
+        {
+            h = Input.GetAxis("Horizontal2");
+            v = Input.GetAxis("Vertical2");
+        }
         moveVector.z = v;
         moveVector.x = h;
         playerController.Move(moveVector * movementSpeed * Time.deltaTime);

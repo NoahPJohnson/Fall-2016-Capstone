@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CatchScript : MonoBehaviour
 {
@@ -9,12 +10,17 @@ public class CatchScript : MonoBehaviour
     [SerializeField] GameObject visualization;
     DiscScript discScript;
 
+    [SerializeField] Text scoreDisplay;
+
+    [SerializeField] bool player1;
+    [SerializeField] int score;
+
     [SerializeField] float recoveryTime;
     [SerializeField] bool ableToCatch;
     [SerializeField] bool holdingDisc;
     [SerializeField] bool discInBox;
     float time;
-    
+
 	// Use this for initialization
 	void Start ()
     {
@@ -28,16 +34,30 @@ public class CatchScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		if (Input.GetButtonDown("Fire1"))
+        if (player1 == true)
         {
-            AttemptCatch();
-        }
+            if (Input.GetButtonDown("Fire1Player1"))
+            {
+                AttemptCatch();
+            }
 
-        if (Input.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1Player1"))
+            {
+                AttemptThrow();
+            }
+        }
+        else
         {
-            AttemptThrow();
-        }
+            if (Input.GetButtonDown("Fire1Player2"))
+            {
+                AttemptCatch();
+            }
 
+            if (Input.GetButtonUp("Fire1Player2"))
+            {
+                AttemptThrow();
+            }
+        }
         if (ableToCatch == false && holdingDisc == false)
         {
             time += Time.deltaTime;
@@ -66,6 +86,7 @@ public class CatchScript : MonoBehaviour
                     holdingDisc = true;
                     IdentifyDisc();
                     visualization.SetActive(true);
+                    scoreDisplay.text = score.ToString();
                     //Debug.Log("Success, disk is: " + caughtDisc);
                 }
             }
@@ -91,6 +112,21 @@ public class CatchScript : MonoBehaviour
         {
             discScript = caughtDisc.GetComponent<DiscScript>();
         }
+    }
+
+    public bool GetPlayerType()
+    {
+        return player1;
+    }
+
+    public void IncrementScore(int increment)
+    {
+        score += increment;
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 
     void OnTriggerEnter(Collider disc)

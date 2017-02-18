@@ -9,6 +9,7 @@ public class PlayerRotationScript : MonoBehaviour
     [SerializeField] float rotationY;
     [SerializeField] Vector3 mouseVector;
     [SerializeField] Quaternion rotationQuaternion;
+    [SerializeField] bool player1;
 
 	// Use this for initialization
 	void Start ()
@@ -21,8 +22,21 @@ public class PlayerRotationScript : MonoBehaviour
     {
         //mouseVector.x = Input.GetAxis("Mouse X");
         //mouseVector.y = Input.GetAxis("Mouse Y");
-        Vector3 MouseGlobalPosition = MainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
-        transform.LookAt(MouseGlobalPosition);
-        transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+        if (player1 == true)
+        {
+            Vector3 MouseGlobalPosition = MainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
+            
+            transform.LookAt(MouseGlobalPosition);
+            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+            transform.rotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Mathf.Atan2(Input.GetAxis("RightStick X"), -Input.GetAxis("RightStick Y")) * Mathf.Rad2Deg, transform.eulerAngles.z));
+        }
+        else
+        {
+            Vector3 MouseGlobalPosition = MainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
+
+            transform.LookAt(MouseGlobalPosition);
+            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+            transform.rotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Mathf.Atan2(Input.GetAxis("RightStick X2"), -Input.GetAxis("RightStick Y2")) * Mathf.Rad2Deg, transform.eulerAngles.z));
+        }
     }
 }
