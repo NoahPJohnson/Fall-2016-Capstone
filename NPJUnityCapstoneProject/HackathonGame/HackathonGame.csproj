@@ -82,7 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CatchScript.cs" />
+    <Compile Include="Assets\DiscPointValueScript.cs" />
     <Compile Include="Assets\DiscScript.cs" />
+    <Compile Include="Assets\GameStateScript.cs" />
+    <Compile Include="Assets\GoogleVR\Scripts\Audio\FmodGvrAudio.cs" />
+    <Compile Include="Assets\GoogleVR\Scripts\Audio\FmodGvrAudioRoom.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
     <Compile Include="Assets\PlayerRotationScript.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
@@ -96,6 +100,7 @@
     <Compile Include="Assets\TeleporterScript.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Plugins\FMOD\LICENSE.TXT" />
     <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
     <None Include="Assets\Standard Assets\Cameras\CameraGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\FirstPersonCharacter\FirstPersonCharacterGuidelines.txt" />

@@ -10,7 +10,9 @@ public class CatchScript : MonoBehaviour
     [SerializeField] GameObject visualization;
     DiscScript discScript;
 
-    [SerializeField] Text scoreDisplay;
+    //[SerializeField] Text scoreDisplay;
+    [SerializeField] GameObject gameStateManager;
+    GameStateScript gameStateScript;
 
     [SerializeField] bool player1;
     [SerializeField] int score;
@@ -21,9 +23,12 @@ public class CatchScript : MonoBehaviour
     [SerializeField] bool discInBox;
     float time;
 
+    public bool gamePaused;
+
 	// Use this for initialization
 	void Start ()
     {
+        gameStateScript = gameStateManager.GetComponent<GameStateScript>();
         IdentifyDisc();
         discInBox = false;
         holdingDisc = true;
@@ -34,28 +39,31 @@ public class CatchScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (player1 == true)
+        if (gamePaused == false)
         {
-            if (Input.GetButtonDown("Fire1Player1"))
+            if (player1 == true)
             {
-                AttemptCatch();
-            }
+                if (Input.GetButtonDown("Fire1Player1"))
+                {
+                    AttemptCatch();
+                }
 
-            if (Input.GetButtonUp("Fire1Player1"))
-            {
-                AttemptThrow();
+                if (Input.GetButtonUp("Fire1Player1"))
+                {
+                    AttemptThrow();
+                }
             }
-        }
-        else
-        {
-            if (Input.GetButtonDown("Fire1Player2"))
+            else
             {
-                AttemptCatch();
-            }
+                if (Input.GetButtonDown("Fire1Player2"))
+                {
+                    AttemptCatch();
+                }
 
-            if (Input.GetButtonUp("Fire1Player2"))
-            {
-                AttemptThrow();
+                if (Input.GetButtonUp("Fire1Player2"))
+                {
+                    AttemptThrow();
+                }
             }
         }
         if (ableToCatch == false && holdingDisc == false)
@@ -86,7 +94,8 @@ public class CatchScript : MonoBehaviour
                     holdingDisc = true;
                     IdentifyDisc();
                     visualization.SetActive(true);
-                    scoreDisplay.text = score.ToString();
+                    gameStateScript.UpdateScore(player1, score);
+                    //scoreDisplay.text = score.ToString();
                     //Debug.Log("Success, disk is: " + caughtDisc);
                 }
             }
@@ -127,6 +136,16 @@ public class CatchScript : MonoBehaviour
     public int GetScore()
     {
         return score;
+    }
+
+    public void ResetValues()
+    {
+        discInBox = false;
+        holdingDisc = true;
+        IdentifyDisc();
+        visualization.SetActive(true);
+        score = 0;
+        time = 0;
     }
 
     void OnTriggerEnter(Collider disc)
